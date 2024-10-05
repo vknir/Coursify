@@ -8,8 +8,7 @@ const userSchema = new mongoose.Schema({
     },
 
     password:{
-        type: String,
-        required: true
+        type: String
     }
 })
 
@@ -21,7 +20,7 @@ const adminSchema = new mongoose.Schema({
 
     password:{
         type: String,
-        required: true
+        require:true
     }
 })
 

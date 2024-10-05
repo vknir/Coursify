@@ -13,7 +13,7 @@ userRouter.use(bodyParser.urlencoded({extended:false}))
 
 userRouter.post('/signup', async (req, res)=>{
     const {username, password}= req.body
-
+    console.log(req.body)
     //craeting credentials validator
     const signupValidator= z.object({
         username : z.string(),
@@ -25,27 +25,35 @@ userRouter.post('/signup', async (req, res)=>{
         signupValidator.parse({username,password})
         // creating user account
 
-        await bcrypt.hash(password, 3, async function(err, hash){
-
-        const result = await userModel.create({username, hash});
-        if(result)
+        await bcrypt.hash(password, 3, async function(err, hash)
         {
-            //fetching user acoount  for userId
-            const findUser = await userModel.findOne({username})
-            const token = jwt.sign({
-                _id:findUser._id
-            },JWT_USER_SECRET)
+            try{
+                const result = await userModel.create({username, hash});
+                
+                
+                if(result)
+                {
+                    //fetching user acoount  for userId
+                    const findUser = await userModel.findOne({username})
+                    const token = jwt.sign({
+                        _id:findUser._id
+                    },JWT_USER_SECRET)
 
-            // return token
-            res.json({
-                message:"User signed up!",
-                token:token
-            })
-        }else{
-            res.josn({
-                message:"Unable to update DB"
-            })
-        }
+                    // return token
+                    res.json({
+                        message:"User signed up!",
+                        token:token
+                    })
+                
+                }else{
+                    res.josn({
+                        message:"Unable to update DB"
+                    })
+                }
+            }catch(err){
+                res.josn({message:"username already in use"})
+                console.log(err)
+            }
         })
 
             
@@ -82,6 +90,11 @@ userRouter.post('/login', async (req, res)=>{
                     const token = jwt.sign({
                         _id:findUser._id
                     },JWT_USER_SECRET)
+
+                    res.json({
+                        message:"User logged in",
+                        token:token
+                    })
                 }
             })
            
