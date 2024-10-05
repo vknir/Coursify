@@ -30,3 +30,5 @@ adminRouter.put('/courses/:courseId', (req, res)=>{
 adminRouter.get('/courses', (req, res)=>{
 
 })
+
+module.exports={adminRouter}
